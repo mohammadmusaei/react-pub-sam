@@ -1,0 +1,54 @@
+name: Publish Branch
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to publish'
+        required: true
+        default: 'main'
+      folder:
+        description: 'Folder to publish in'
+        required: true
+        default: 'docs'
+      domain:
+        description: 'Custom domain (optional)'
+        required: false
+        default: ''
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout the repository
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ github.event.inputs.branch }}
+
+    - name: Set up Node.js (optional, if you are using Node.js)
+      uses: actions/setup-node@v3
+      with:
+        node-version: '14' # Specify your Node.js version
+
+    - name: Install dependencies (if needed)
+      run: npm install # Or the relevant install command for your project
+
+    - name: Build the project (if needed)
+      run: npm run build # Or the relevant build command for your project
+
+    - name: Deploy to folder
+      run: |
+        mkdir -p ${{ github.event.inputs.folder }}
+        cp -r * ${{ github.event.inputs.folder }}
+
+    - name: Commit and push changes
+      run: |
+        git config --global user.email "mohammad.musaei@gmail.com"
+        git config --global user.name "mohammad.musaei"
+        git add ${{ github.event.inputs.folder }}
+        git commit -m "Deployed to ${{ github.event.inputs.folder }} from ${{ github.event.inputs.branch }}"
+        git push origin HEAD:${{ github.event.inputs.branch }}
+
+    - name: Output URL
+      run: echo "Your content is deployed and can be accessed at: https://${{ github.repository_owner }}.github.io/${{ github.event.inputs.folder }}/"
