@@ -40,7 +40,7 @@ jobs:
       - name: Deploy to folder
         run: |
           mkdir -p ${{ github.event.inputs.folder }}
-          rsync -av --progress --exclude="${{ github.event.inputs.folder }}" . ${{ github.event.inputs.folder }}
+          cp -r build/* ${{ github.event.inputs.folder }}
 
       - name: Commit and push changes
         run: |
