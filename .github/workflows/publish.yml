@@ -39,6 +39,7 @@ jobs:
 
       - name: Deploy to folder
         run: |
+          rm -rf ${{ github.event.inputs.folder }}
           mkdir -p ${{ github.event.inputs.folder }}
           cp -r build/* ${{ github.event.inputs.folder }}
 
