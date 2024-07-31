@@ -40,7 +40,8 @@ jobs:
       - name: Deploy to folder
         run: |
           mkdir -p ${{ github.event.inputs.folder }}
-          cp -r * ${{ github.event.inputs.folder }}
+          shopt -s extglob
+          cp -r !( ${github.event.inputs.folder} ) ${{ github.event.inputs.folder }}
 
       - name: Commit and push changes
         run: |
